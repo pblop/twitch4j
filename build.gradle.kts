@@ -150,7 +150,7 @@ subprojects {
 					version {
 						strictly("[2.15,3-alpha[")
 						// renovate: depName=com.fasterxml.jackson:jackson-bom
-						prefer("2.19.2")
+						prefer("2.20.0")
 					}
 				}
 			}
