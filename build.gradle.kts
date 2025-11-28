@@ -77,7 +77,7 @@ subprojects {
 			api(group = "com.bucket4j", name = "bucket4j_jdk8-core", version = "8.10.1")
 
 			// HTTP
-			api(group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0")
+			api(group = "com.squareup.okhttp3", name = "okhttp", version = "5.3.2")
 
 			// Credential Manager
 			api(group = "com.github.philippheuer.credentialmanager", name = "credentialmanager", version = "0.3.1")
@@ -222,7 +222,7 @@ subprojects {
 						"https://javadoc.io/doc/org.jetbrains/annotations/26.0.2",
 						"https://javadoc.io/doc/commons-configuration/commons-configuration/1.10",
 						"https://javadoc.io/doc/com.bucket4j/bucket4j_jdk8-core/8.10.1",
-						// "https://javadoc.io/doc/com.squareup.okhttp3/okhttp/4.12.0", // blocked by https://github.com/square/okhttp/issues/6450
+						// "https://javadoc.io/doc/com.squareup.okhttp3/okhttp/5.3.2", // blocked by https://github.com/square/okhttp/issues/6450
 						"https://javadoc.io/doc/com.github.philippheuer.events4j/events4j-core/0.12.3",
 						"https://javadoc.io/doc/com.github.philippheuer.events4j/events4j-handler-simple/0.12.3",
 						"https://javadoc.io/doc/com.github.philippheuer.credentialmanager/credentialmanager/0.3.1",
