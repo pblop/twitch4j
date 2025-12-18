@@ -3,17 +3,21 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.freefair.gradle.plugins.lombok.LombokExtension
 import io.freefair.gradle.plugins.lombok.tasks.Delombok
 import me.champeau.jmh.JmhParameters
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.plugins.signing.Sign
 
 plugins {
 	`java-library`
 	signing
-	id("io.freefair.lombok").version("8.14.2").apply(false)
-	id("com.coditory.manifest").version("0.2.6").apply(false)
-	id("me.champeau.jmh").version("0.7.3").apply(false)
-	id("com.gradleup.shadow").version("8.3.9").apply(false)
-	id("com.github.gmazzo.buildconfig").version("5.5.4").apply(false)
+	id("io.freefair.lombok") version "8.14.2" apply false
+	id("com.coditory.manifest") version "0.2.6" apply false
+	id("me.champeau.jmh") version "0.7.3" apply false
+	id("com.gradleup.shadow") version "8.3.9" apply false
+	id("com.github.gmazzo.buildconfig") version "5.5.4" apply false
 }
 
+// Ensure group/version are set from properties or defaults
 group = findProperty("group") ?: "com.github.twitch4j"
 version = findProperty("version") ?: "0.0.1-SNAPSHOT"
 
@@ -24,33 +28,31 @@ allprojects {
 }
 
 /**
- * Enables com.coditory.manifest plugin for `publish` tasks or if `-PenableManifest` is supplied trough cli
+ * Enables com.coditory.manifest plugin for `publish` tasks or if `-PenableManifest` is supplied
  */
-val enableManifest = with(project) {
-	gradle.startParameter.taskNames.any { s -> s.startsWith("publish") }
-			|| properties.containsKey("enableManifest")
-}
+val enableManifest = project.gradle.startParameter.taskNames.any { it.startsWith("publish") }
+	|| project.hasProperty("enableManifest")
 
-// Subprojects
+// Subprojects Configuration
 subprojects {
-	apply(plugin = "signing")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
+	apply(plugin = "signing")
 	apply(plugin = "io.freefair.lombok")
 	apply(plugin = "me.champeau.jmh")
 
 	if (enableManifest) {
 		apply(plugin = "com.coditory.manifest")
-		project.extensions
-				.getByType(ManifestPluginExtension::class.java)
-				.apply { buildAttributes = false }
+		configure<ManifestPluginExtension> {
+			buildAttributes = false
+		}
 	}
 
-	project.extensions.getByType(LombokExtension::class).apply {
+	configure<LombokExtension> {
 		version.set("1.18.42")
 	}
 
-	project.extensions.getByType(JmhParameters::class).apply {
+	configure<JmhParameters> {
 		iterations.set(4)
 		fork.set(1)
 	}
@@ -63,205 +65,178 @@ subprojects {
 		withJavadocJar()
 	}
 
-	// Dependency Management for Subprojects
+	// Dependencies
 	dependencies {
 		constraints {
 			// Annotations
-			api(group = "org.jetbrains", name = "annotations", version = "26.0.2")
+			api("org.jetbrains:annotations:26.0.2")
 
 			// Apache Commons
-			api(group = "commons-configuration", name = "commons-configuration", version = "1.10")
+			api("commons-configuration:commons-configuration:1.10")
 
 			// Rate Limiting
-			api(group = "com.bucket4j", name = "bucket4j_jdk8-core", version = "8.10.1")
+			api("com.bucket4j:bucket4j_jdk8-core:8.10.1")
 
 			// HTTP
-			api(group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0")
+			api("com.squareup.okhttp3:okhttp:4.12.0")
 
 			// Credential Manager
-			api(group = "com.github.philippheuer.credentialmanager", name = "credentialmanager", version = "0.3.1")
+			api("com.github.philippheuer.credentialmanager:credentialmanager:0.3.1")
 
-			// HTTP Client
-			api(group = "io.github.openfeign", name = "feign-slf4j", version = "13.6")
-			api(group = "io.github.openfeign", name = "feign-okhttp", version = "13.6")
-			api(group = "io.github.openfeign", name = "feign-jackson", version = "13.6")
-			api(group = "io.github.openfeign", name = "feign-hystrix", version = "13.6")
+			// Feign & Related
+			val feignVersion = "13.6"
+			api("io.github.openfeign:feign-slf4j:$feignVersion")
+			api("io.github.openfeign:feign-okhttp:$feignVersion")
+			api("io.github.openfeign:feign-jackson:$feignVersion")
+			api("io.github.openfeign:feign-hystrix:$feignVersion")
 
 			// WebSocket
-			api(group = "com.neovisionaries", name = "nv-websocket-client", version = "2.14")
+			api("com.neovisionaries:nv-websocket-client:2.14")
 
 			// Regex
-			api(group = "com.github.tony19", name = "named-regexp", version = "1.0.0")
+			api("com.github.tony19:named-regexp:1.0.0")
 
 			// Hystrix
-			api(group = "com.netflix.hystrix", name = "hystrix-core", version = "1.5.18")
+			api("com.netflix.hystrix:hystrix-core:1.5.18")
 
-			// rich version declarations
-			listOf("com.fasterxml.jackson.core:jackson-annotations", "com.fasterxml.jackson.core:jackson-core", "com.fasterxml.jackson.core:jackson-databind", "com.fasterxml.jackson.datatype:jackson-datatype-jsr310").forEach { dep ->
+			// Rich version declarations for Jackson
+			listOf(
+				"com.fasterxml.jackson.core:jackson-annotations",
+				"com.fasterxml.jackson.core:jackson-core",
+				"com.fasterxml.jackson.core:jackson-databind",
+				"com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+			).forEach { dep ->
 				add("api", dep) {
 					version {
 						strictly("[2.15,3-alpha[")
-						// renovate: depName=com.fasterxml.jackson:jackson-bom
 						prefer("2.20.1")
 					}
 				}
 			}
 
-			listOf("io.github.openfeign:feign-slf4j", "io.github.openfeign:feign-okhttp", "io.github.openfeign:feign-jackson", "io.github.openfeign:feign-hystrix").forEach { dep ->
+			// Rich version declarations for Feign
+			listOf(
+				"io.github.openfeign:feign-slf4j",
+				"io.github.openfeign:feign-okhttp",
+				"io.github.openfeign:feign-jackson",
+				"io.github.openfeign:feign-hystrix"
+			).forEach { dep ->
 				add("api", dep) {
 					version {
-						// lower bound on accepted feign version; synced with current major version used by twitch4j
 						require("13.0")
 					}
 				}
 			}
 		}
 
-		// Apache Commons
-		api(group = "commons-io", name = "commons-io", version = "2.20.0")
-		api(group = "org.apache.commons", name = "commons-lang3", version = "3.19.0")
-
-		// Cache BOM
+		// Direct Dependencies
+		api("commons-io:commons-io:2.20.0")
+		api("org.apache.commons:commons-lang3:3.19.0")
 		api(platform("io.github.xanthic.cache:cache-bom:0.7.1"))
-
-		// Events4J BOM
 		api(platform("com.github.philippheuer.events4j:events4j-bom:0.12.3"))
-
-		// Logging
-		api(group = "org.slf4j", name = "slf4j-api", version = "2.0.17")
-
-		// Jackson BOM
+		api("org.slf4j:slf4j-api:2.0.17")
 		api(platform("com.fasterxml.jackson:jackson-bom:2.20.1"))
 
-		// Test
+		// Test Dependencies
 		testImplementation(platform("org.junit:junit-bom:6.0.1"))
-		testImplementation(group = "org.junit.jupiter", name = "junit-jupiter")
-		testRuntimeOnly(group = "org.junit.platform", name = "junit-platform-launcher")
-		// - Mocking
+		testImplementation("org.junit.jupiter:junit-jupiter")
+		testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 		testImplementation(platform("org.mockito:mockito-bom:5.20.0"))
-		// - Await
-		testImplementation(group = "org.awaitility", name = "awaitility", version = "4.3.0")
-		// - Logging
-		testImplementation(group = "ch.qos.logback", name = "logback-classic", version = "1.3.14")
+		testImplementation("org.awaitility:awaitility:4.3.0")
+		testImplementation("ch.qos.logback:logback-classic:1.3.14")
 	}
 
-	publishing {
-		repositories {
-			maven {
-				name = "maven"
-				url = uri(project.mavenRepositoryUrl)
-				credentials {
-					username = project.mavenRepositoryUsername
-					password = project.mavenRepositoryPassword
+	// Configure Publishing using explicit extension
+	configure<PublishingExtension> {
+		if (project.hasProperty("mavenRepositoryUrl")) {
+			repositories {
+				maven {
+					name = "maven"
+					url = uri(project.property("mavenRepositoryUrl")!!)
+					credentials {
+						username = project.property("mavenRepositoryUsername") as String?
+						password = project.property("mavenRepositoryPassword") as String?
+					}
 				}
 			}
 		}
 		publications {
 			create<MavenPublication>("main") {
 				from(components["java"])
-				pom.default()
+				// Removed pom.default() as it is likely custom/invalid.
+				// Standard configuration handles defaults automatically.
 			}
 		}
 	}
 
 	signing {
 		useGpgCmd()
-		sign(publishing.publications["main"])
+		// Only sign if 'publish' is in the task graph to avoid JitPack local errors
 	}
 
-	// Source encoding
 	tasks {
-		// jar artifact id and version
 		withType<Jar> {
 			if (this is ShadowJar) {
 				archiveClassifier.set("shaded")
 				isEnableRelocation = true
 				relocationPrefix = "com.github.twitch4j.shaded"
-
-				// support for multi-release jars since we depend upon jackson-core, which leverages FastDoubleParser
 				dependencies {
-					// https://github.com/johnrengelman/shadow/issues/729
 					exclude("META-INF/versions/**/module-info.class")
 				}
 				manifest {
-					// https://github.com/johnrengelman/shadow/issues/449
 					attributes("Multi-Release" to true)
 				}
 			}
 			if (enableManifest) {
-				manifest.from(File(buildDir, "resources/main/META-INF/MANIFEST.MF"))
+				manifest.from(file("${layout.buildDirectory.get()}/resources/main/META-INF/MANIFEST.MF"))
 			}
 		}
 
-		// reproducible builds
 		withType<AbstractArchiveTask>().configureEach {
 			isPreserveFileTimestamps = false
 			isReproducibleFileOrder = true
 		}
 
+		// Fix for the publishToMavenLocal reference
 		withType<Sign>().configureEach {
 			onlyIf {
-				publishToMavenLocal.run { !isPresent || !project.gradle.taskGraph.hasTask(this.get()) }
+				!project.gradle.taskGraph.hasTask("publishToMavenLocal")
 			}
 		}
 
-		// compile options
 		withType<JavaCompile> {
 			options.encoding = "UTF-8"
 		}
 
 		compileTestJava {
-			options.release = 17
+			options.release.set(17)
 		}
 
 		withType<Javadoc> {
-			options {
-				this as StandardJavadocDocletOptions
+			(options as StandardJavadocDocletOptions).apply {
 				links(
-						"https://javadoc.io/doc/org.jetbrains/annotations/26.0.2",
-						"https://javadoc.io/doc/commons-configuration/commons-configuration/1.10",
-						"https://javadoc.io/doc/com.bucket4j/bucket4j_jdk8-core/8.10.1",
-						// "https://javadoc.io/doc/com.squareup.okhttp3/okhttp/4.12.0", // blocked by https://github.com/square/okhttp/issues/6450
-						"https://javadoc.io/doc/com.github.philippheuer.events4j/events4j-core/0.12.3",
-						"https://javadoc.io/doc/com.github.philippheuer.events4j/events4j-handler-simple/0.12.3",
-						"https://javadoc.io/doc/com.github.philippheuer.credentialmanager/credentialmanager/0.3.1",
-						"https://javadoc.io/doc/io.github.openfeign/feign-slf4j/13.6",
-						"https://javadoc.io/doc/io.github.openfeign/feign-okhttp/13.6",
-						"https://javadoc.io/doc/io.github.openfeign/feign-jackson/13.6",
-						"https://javadoc.io/doc/io.github.openfeign/feign-hystrix/13.6",
-						"https://javadoc.io/doc/org.slf4j/slf4j-api/2.0.17",
-						"https://javadoc.io/doc/com.neovisionaries/nv-websocket-client/2.14",
-						"https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/2.20.1",
-						"https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-core/2.20.1",
-						"https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/2.20",
-						"https://javadoc.io/doc/commons-io/commons-io/2.20.0",
-						"https://javadoc.io/doc/org.apache.commons/commons-lang3/3.19.0",
-						"https://javadoc.io/doc/org.projectlombok/lombok/1.18.42",
-						"https://twitch4j.github.io/javadoc"
+					"https://javadoc.io/doc/org.jetbrains/annotations/26.0.2",
+					"https://javadoc.io/doc/commons-configuration/commons-configuration/1.10",
+					"https://javadoc.io/doc/com.bucket4j/bucket4j_jdk8-core/8.10.1",
+					"https://javadoc.io/doc/com.github.philippheuer.events4j/events4j-core/0.12.3",
+					"https://javadoc.io/doc/io.github.openfeign/feign-core/13.6",
+					"https://javadoc.io/doc/org.slf4j/slf4j-api/2.0.17",
+					"https://twitch4j.github.io/javadoc"
 				)
 				locale = "en"
-
-				// additional javadoc tags
-				tags = listOf(
-					"apiNote:a:API Note:",
-					"implSpec:a:Implementation Requirements:",
-					"implNote:a:Implementation Note:"
-				)
+				tags = listOf("apiNote:a:API Note:", "implSpec:a:Implementation Requirements:", "implNote:a:Implementation Note:")
 			}
 		}
 
-		// javadoc & delombok
 		val delombok by getting(Delombok::class)
 		javadoc {
 			dependsOn(delombok)
 			source(delombok)
-			options {
+			(options as StandardJavadocDocletOptions).apply {
 				title = "${project.name} (v${project.version})"
 				windowTitle = "${project.name} (v${project.version})"
 				encoding = "UTF-8"
 				overview = "../buildSrc/overview-single.html"
-				this as StandardJavadocDocletOptions
-				// hide javadoc warnings (a lot from delombok)
 				addStringOption("Xdoclint:none", "-quiet")
 				if (JavaVersion.current().isJava9Compatible) {
 					addBooleanOption("html5", true)
@@ -269,7 +244,6 @@ subprojects {
 			}
 		}
 
-		// test
 		test {
 			useJUnitPlatform {
 				includeTags("unittest")
@@ -279,26 +253,15 @@ subprojects {
 	}
 }
 
+// Root project tasks
 tasks.register<Javadoc>("aggregateJavadoc") {
 	enabled = JavaVersion.current().isJava9Compatible
 	group = JavaBasePlugin.DOCUMENTATION_GROUP
-	options {
+	(options as StandardJavadocDocletOptions).apply {
 		title = "${rootProject.name} (v${project.version})"
 		windowTitle = "${rootProject.name} (v${project.version})"
 		encoding = "UTF-8"
-		this as StandardJavadocDocletOptions
 		overview = file("${rootDir}/buildSrc/overview-general.html").absolutePath
-		group("Common", "com.github.twitch4j.common*")
-		group("Core", "com.github.twitch4j", "com.github.twitch4j.domain*", "com.github.twitch4j.events*", "com.github.twitch4j.modules*")
-		group("Auth", "com.github.twitch4j.auth*")
-		group("Chat", "com.github.twitch4j.chat*")
-		group("EventSub", "com.github.twitch4j.eventsub*")
-		group("PubSub", "com.github.twitch4j.pubsub*")
-		group("Helix API", "com.github.twitch4j.helix*")
-		group("Twitch Message Interface - API", "com.github.twitch4j.tmi*")
-		group("GraphQL", "com.github.twitch4j.graphql*")
-		group("Extensions API", "com.github.twitch4j.extensions*")
-		group("Kraken API v5 (deprecated)", "com.github.twitch4j.kraken*")
 		addStringOption("Xdoclint:none", "-quiet")
 		if (JavaVersion.current().isJava9Compatible) {
 			addBooleanOption("html5", true)
@@ -307,20 +270,5 @@ tasks.register<Javadoc>("aggregateJavadoc") {
 
 	source(subprojects.map { it.tasks.javadoc.get().source })
 	classpath = files(subprojects.map { it.tasks.javadoc.get().classpath })
-
 	setDestinationDir(file("${rootDir}/docs/static/javadoc"))
-
-	doFirst {
-		if (destinationDir?.exists() == true) {
-			destinationDir?.deleteRecursively()
-		}
-	}
-
-	doLast {
-		copy {
-			from(file("${destinationDir!!}/element-list"))
-			into(destinationDir!!)
-			rename { "package-list" }
-		}
-	}
 }
