@@ -1,0 +1,536 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.github.pblop",
+    "module": "twitch4j-auth",
+    "version": "expose-autojoin-own-channel-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains",
+          "module": "annotations",
+          "version": {
+            "requires": "26.0.2"
+          }
+        },
+        {
+          "group": "commons-configuration",
+          "module": "commons-configuration",
+          "version": {
+            "requires": "1.10"
+          }
+        },
+        {
+          "group": "com.bucket4j",
+          "module": "bucket4j_jdk8-core",
+          "version": {
+            "requires": "8.10.1"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "4.12.0"
+          }
+        },
+        {
+          "group": "com.github.philippheuer.credentialmanager",
+          "module": "credentialmanager",
+          "version": {
+            "requires": "0.3.1"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-slf4j",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-okhttp",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-jackson",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-hystrix",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "com.neovisionaries",
+          "module": "nv-websocket-client",
+          "version": {
+            "requires": "2.14"
+          }
+        },
+        {
+          "group": "com.github.tony19",
+          "module": "named-regexp",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.netflix.hystrix",
+          "module": "hystrix-core",
+          "version": {
+            "requires": "1.5.18"
+          }
+        },
+        {
+          "group": "commons-io",
+          "module": "commons-io",
+          "version": {
+            "requires": "2.20.0"
+          }
+        },
+        {
+          "group": "org.apache.commons",
+          "module": "commons-lang3",
+          "version": {
+            "requires": "3.19.0"
+          }
+        },
+        {
+          "group": "io.github.xanthic.cache",
+          "module": "cache-bom",
+          "version": {
+            "requires": "0.7.1"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "com.github.philippheuer.events4j",
+          "module": "events4j-bom",
+          "version": {
+            "requires": "0.12.3"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.17"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson",
+          "module": "jackson-bom",
+          "version": {
+            "requires": "2.20.1"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp"
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind"
+        },
+        {
+          "group": "com.github.philippheuer.credentialmanager",
+          "module": "credentialmanager"
+        }
+      ],
+      "dependencyConstraints": [
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-annotations",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-core",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.datatype",
+          "module": "jackson-datatype-jsr310",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-slf4j",
+          "version": {
+            "requires": "13.0"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-okhttp",
+          "version": {
+            "requires": "13.0"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-jackson",
+          "version": {
+            "requires": "13.0"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-hystrix",
+          "version": {
+            "requires": "13.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT.jar",
+          "url": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT.jar",
+          "size": 12693,
+          "sha512": "87185a6e9785b64a3b89fc8d78c689275570458ab669cde965ca6daccf2eda005a9598d550986a8cccd45152a81c797609671dc8b3159505f5c64b6da3d547dc",
+          "sha256": "3257127753f63d580009e075a88631e2a29695584cc9e270d6dfa53c3be0e0e5",
+          "sha1": "94875b2fb9942e6d28b6464c52c7cfc3531f5862",
+          "md5": "7e70f9281ede3548477bfccb36ed6e37"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains",
+          "module": "annotations",
+          "version": {
+            "requires": "26.0.2"
+          }
+        },
+        {
+          "group": "commons-configuration",
+          "module": "commons-configuration",
+          "version": {
+            "requires": "1.10"
+          }
+        },
+        {
+          "group": "com.bucket4j",
+          "module": "bucket4j_jdk8-core",
+          "version": {
+            "requires": "8.10.1"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "4.12.0"
+          }
+        },
+        {
+          "group": "com.github.philippheuer.credentialmanager",
+          "module": "credentialmanager",
+          "version": {
+            "requires": "0.3.1"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-slf4j",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-okhttp",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-jackson",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-hystrix",
+          "version": {
+            "requires": "13.6"
+          }
+        },
+        {
+          "group": "com.neovisionaries",
+          "module": "nv-websocket-client",
+          "version": {
+            "requires": "2.14"
+          }
+        },
+        {
+          "group": "com.github.tony19",
+          "module": "named-regexp",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.netflix.hystrix",
+          "module": "hystrix-core",
+          "version": {
+            "requires": "1.5.18"
+          }
+        },
+        {
+          "group": "commons-io",
+          "module": "commons-io",
+          "version": {
+            "requires": "2.20.0"
+          }
+        },
+        {
+          "group": "org.apache.commons",
+          "module": "commons-lang3",
+          "version": {
+            "requires": "3.19.0"
+          }
+        },
+        {
+          "group": "io.github.xanthic.cache",
+          "module": "cache-bom",
+          "version": {
+            "requires": "0.7.1"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "com.github.philippheuer.events4j",
+          "module": "events4j-bom",
+          "version": {
+            "requires": "0.12.3"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.17"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson",
+          "module": "jackson-bom",
+          "version": {
+            "requires": "2.20.1"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp"
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind"
+        },
+        {
+          "group": "com.github.philippheuer.credentialmanager",
+          "module": "credentialmanager"
+        }
+      ],
+      "dependencyConstraints": [
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-annotations",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-core",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.datatype",
+          "module": "jackson-datatype-jsr310",
+          "version": {
+            "strictly": "[2.15,3-alpha[",
+            "requires": "[2.15,3-alpha[",
+            "prefers": "2.20.1"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-slf4j",
+          "version": {
+            "requires": "13.0"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-okhttp",
+          "version": {
+            "requires": "13.0"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-jackson",
+          "version": {
+            "requires": "13.0"
+          }
+        },
+        {
+          "group": "io.github.openfeign",
+          "module": "feign-hystrix",
+          "version": {
+            "requires": "13.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT.jar",
+          "url": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT.jar",
+          "size": 12693,
+          "sha512": "87185a6e9785b64a3b89fc8d78c689275570458ab669cde965ca6daccf2eda005a9598d550986a8cccd45152a81c797609671dc8b3159505f5c64b6da3d547dc",
+          "sha256": "3257127753f63d580009e075a88631e2a29695584cc9e270d6dfa53c3be0e0e5",
+          "sha1": "94875b2fb9942e6d28b6464c52c7cfc3531f5862",
+          "md5": "7e70f9281ede3548477bfccb36ed6e37"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT-sources.jar",
+          "url": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT-sources.jar",
+          "size": 5924,
+          "sha512": "e55ef214ff9c6380f917756c42e251cf1279cd1456ebf02dd9ffc3f700693d29e192ffcca5c1d745edac39da24bfad742059c41f02395dffefd516619dff5435",
+          "sha256": "e34970b3060c5a2f91c80575549784f545f7099efbf6580cdd57ea0767f71d21",
+          "sha1": "25699444d1327369497e2edbcb34c96a0259d583",
+          "md5": "03a4c6666afdd84bc726a76fc4e61ae0"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT-javadoc.jar",
+          "url": "twitch4j-auth-expose-autojoin-own-channel-SNAPSHOT-javadoc.jar",
+          "size": 120233,
+          "sha512": "e319b0a8fd2d7aeab4e27339e7a9e258a638a5c483d7627d75070324ee05be3e1833f72ae84f80e2e9903471546d55ae92477eeaa245fcc895fc00d1a0229d30",
+          "sha256": "0c1b48fb0b26375a7a66a2f0ef7ee2eb25770b38cb445ee9e60690b4c282d79c",
+          "sha1": "433de4e77092c8dd8665d11bf0ad5a17d1e083f4",
+          "md5": "75ad5bd166d685ffc7e4b4265922ecb2"
+        }
+      ]
+    }
+  ]
+}

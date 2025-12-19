@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.github.pblop</groupId>
+  <artifactId>twitch4j-kotlin</artifactId>
+  <versioning>
+    <latest>expose-autojoin-own-channel-SNAPSHOT</latest>
+    <versions>
+      <version>expose-autojoin-own-channel-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20251219021434</lastUpdated>
+  </versioning>
+</metadata>
